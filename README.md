@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Taqweem (تقويم) 🚀
+**Smart AI-Powered Exam Generation & Management System**
 
-## Getting Started
+Taqweem is a modern educational platform designed to help teachers generate exams instantly using Artificial Intelligence, manage students, and track performance with detailed analytics.
 
-First, run the development server:
+![Taqweem Dashboard Preview](https://via.placeholder.com/800x400?text=Taqweem+Dashboard+Preview)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Key Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 🤖 AI Question Generation
+- **Multi-Model Support**: Utilizes powerful AI models (Gemini, Llama, Qwen, etc.) via OpenRouter.
+- **Smart Fallback**: Automatically switches models if one fails or is rate-limited.
+- **Customizable**: Generate questions by Subject, Skill, Difficulty, and Count.
+- **Bank Integration**: Save generated questions directly to your specialized Question Bank.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 📝 Exam Management
+- **Dynamic Exam Creation**: Build exams from your question bank manually or via AI.
+- **Access Control**: Activat/Deactivate exams instantly to control student access.
+- **Time Limits**: Set strict duration timers for exams.
+- **Secure Sharing**: Share exams via a unique 6-character code.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🎓 Student Experience
+- **Easy Access**: Students join via Exam Code.
+- **Identity Options**: Sign in with **Name**, **Email**, or **Google Account** (One-click login).
+- **Interactive Interface**: Clean, distraction-free exam environment.
+- **Instant Feedback**: Detailed review of answers immediately after submission (configurable).
+- **PDF Reports**: One-click printable reports for exam results with custom school branding.
 
-## Learn More
+### 📊 Teachers Dashboard
+- **Result Tracking**: View all student submissions and grades.
+- **Analytics**: Identify student strengths and weaknesses based on skills.
+- **Question Bank**: Manage thousands of questions with filtering and editing capabilities.
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Framework**: [Next.js 14](https://nextjs.org/) (App Router, Server Actions)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Database**: [MongoDB](https://www.mongodb.com/) (Mongoose ODM)
+- **Styling**: [TailwindCSS](https://tailwindcss.com/)
+- **UI Components**: [Headless UI](https://headlessui.com/), [Lucide React](https://lucide.dev/)
+- **Authentication**: JWT & Google Identity Services (GSI)
+- **AI Integration**: OpenAI SDK (configured for OpenRouter)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 Getting Started
 
-## Deploy on Vercel
+### Prerequisites
+- Node.js 18+
+- MongoDB Database URL
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Installation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Abdelrahman47-code/Taqweem.git
+   cd Taqweem
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Environment Setup**
+   Create a `.env.local` file in the root directory and add the following keys:
+   ```env
+   # Database
+   MONGODB_URI=your_mongodb_connection_string
+
+   # Authentication
+   JWT_SECRET=your_super_secret_jwt_key
+   NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_client_id
+
+   # AI Service (OpenRouter)
+   OPENROUTER_API_KEY=your_openrouter_api_key
+   NEXT_PUBLIC_APP_URL=http://localhost:3000
+   ```
+
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000) with your browser.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+*Designed & Developed by Abdelrahman Ahmed*
+*Footer Design: الأستاذة خديجه ظافر الشهري*
