@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 interface GoogleLoginProps {
-    onSuccess: (name: string, email: string) => void;
+    onSuccess: (name: string, email: string, credential?: string) => void;
 }
 
 declare global {
@@ -54,7 +54,7 @@ export default function GoogleLoginButton({ onSuccess }: GoogleLoginProps) {
             const payload = JSON.parse(jsonPayload);
 
             if (payload.name && payload.email) {
-                onSuccess(payload.name, payload.email);
+                onSuccess(payload.name, payload.email, response.credential);
             }
         } catch (e) {
             console.error('Error decoding Google credential', e);

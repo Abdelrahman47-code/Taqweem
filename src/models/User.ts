@@ -11,6 +11,9 @@ const UserSchema = new Schema({
     },
     school: { type: String },
     grade: { type: String }, // For students
+    defaultDuration: { type: Number, default: 30 },
+    defaultGrade: { type: String },
+    avatar: { type: String },
     createdAt: { type: Date, default: Date.now },
 });
 

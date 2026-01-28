@@ -22,10 +22,20 @@ const ResultSchema = new Schema({
     maxScore: { type: Number, required: true },
 
     // AI Analysis
-    aiAnalysis: { type: String }, // Plain text or JSON string analysis
+    aiAnalysis: { type: String },
+    classification: { type: String }, // 'Excellent', 'Very Good', 'Good', 'Acceptable', 'Weak'
     strengths: [{ type: String }],
     weaknesses: [{ type: String }],
-    remedialPlan: { type: String }, // Markdown content for worksheet
+    suggestedPlan: {
+        type: { type: String, enum: ['remedial', 'enrichment'] },
+        title: { type: String },
+        content: { type: String }, // The main text
+        exercises: [{
+            text: { type: String },
+            options: [{ type: String }],
+            correctAnswer: { type: String }
+        }]
+    },
 
     createdAt: { type: Date, default: Date.now },
 });

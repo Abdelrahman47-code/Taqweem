@@ -5,6 +5,7 @@ import Exam from '@/models/Exam';
 import Question from '@/models/Question';
 import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
+import { generateLearningPlan } from '@/lib/ai';
 
 export async function POST(req: Request) {
     try {
@@ -67,6 +68,24 @@ export async function POST(req: Request) {
             improvement = currentPercentage - previousPercentage;
         }
 
+        // Classification Logic
+        const percentage = (totalScore / maxScore) * 100;
+        let classification = 'Weak';
+        if (percentage >= 90) classification = 'Excellent';
+        else if (percentage >= 80) classification = 'Very Good';
+        else if (percentage >= 70) classification = 'Good';
+        else if (percentage >= 60) classification = 'Acceptable';
+
+        // AI Plan Generation
+        let suggestedPlan = null;
+        try {
+            // Only generate detailed plan if there are weaknesses or a few random ones for enrichment
+            // Pass unique weaknesses to AI
+            suggestedPlan = await generateLearningPlan(totalScore, maxScore, Array.from(new Set(weaknesses)));
+        } catch (e) {
+            console.error('AI Plan Gen Failed:', e);
+        }
+
         // Save
         const result = await Result.create({
             examId,
@@ -77,6 +96,8 @@ export async function POST(req: Request) {
             answers: gradedAnswers,
             totalScore,
             maxScore,
+            classification,
+            suggestedPlan,
             strengths: Array.from(new Set(strengths)),
             weaknesses: Array.from(new Set(weaknesses)),
             improvement
@@ -88,6 +109,8 @@ export async function POST(req: Request) {
             score: totalScore,
             maxScore,
             improvement,
+            classification,
+            suggestedPlan,
             feedback: gradedAnswers.map((g: any) => {
                 const q = exam.questions.find((eq: any) => eq._id.toString() === g.questionId.toString());
                 return {

@@ -217,6 +217,85 @@ export default function StudentExamPage({ params }: { params: { id: string } }) 
                         </div>
                     </div>
 
+                    {/* Classification & AI Plan */}
+                    {(result.classification || result.suggestedPlan) && (
+                        <div className="space-y-6 print:hidden">
+                            {/* Classification Card */}
+                            <div className={`p-6 rounded-xl shadow-sm text-center text-white ${result.classification === 'Excellent' ? 'bg-green-500' :
+                                result.classification === 'Very Good' ? 'bg-teal-500' :
+                                    result.classification === 'Good' ? 'bg-blue-500' :
+                                        result.classification === 'Acceptable' ? 'bg-orange-500' : 'bg-red-500'
+                                }`}>
+                                <h3 className="text-xl font-bold mb-2">تصنيف الطالب حسب المستوى</h3>
+                                <div className="text-4xl font-black mb-1">
+                                    {result.classification === 'Excellent' ? '🌟 ممتاز' :
+                                        result.classification === 'Very Good' ? '👍 جيد جداً' :
+                                            result.classification === 'Good' ? '👌 جيد' :
+                                                result.classification === 'Acceptable' ? '⚠️ مقبول' : '🛑 بحاجة لتحسين'}
+                                </div>
+                                <p className="opacity-90">
+                                    {result.classification === 'Excellent' ? 'أداء رائع! حافظ على هذا المستوى.' :
+                                        result.classification === 'Weak' ? 'لا تيأس، خطة العلاج ستساعدك.' : 'بداية جيدة، يمكننا التحسن أكثر.'}
+                                </p>
+                            </div>
+
+                            {/* AI Plan Card */}
+                            {result.suggestedPlan && (
+                                <div className={`border-2 rounded-xl overflow-hidden ${result.suggestedPlan.type === 'enrichment' ? 'border-purple-200 bg-purple-50' : 'border-orange-200 bg-orange-50'
+                                    }`}>
+                                    <div className={`p-4 text-white font-bold text-lg flex justify-between items-center ${result.suggestedPlan.type === 'enrichment' ? 'bg-purple-600' : 'bg-orange-600'
+                                        }`}>
+                                        <span>{result.suggestedPlan.title}</span>
+                                        <span>{result.suggestedPlan.type === 'enrichment' ? '🚀' : '🛠️'}</span>
+                                    </div>
+
+                                    <div className="p-6 space-y-4">
+                                        <p className="text-gray-700 leading-relaxed text-lg">
+                                            {result.suggestedPlan.content}
+                                        </p>
+
+                                        {/* Exercises */}
+                                        {result.suggestedPlan.exercises && result.suggestedPlan.exercises.length > 0 && (
+                                            <div className="space-y-4 mt-6">
+                                                <h4 className="font-bold text-gray-800 border-b pb-2">
+                                                    {result.suggestedPlan.type === 'enrichment' ? 'تحدي العباقرة:' : 'تدريب لتعزيز الفهم:'}
+                                                </h4>
+                                                {result.suggestedPlan.exercises.map((ex: any, i: number) => (
+                                                    <div key={i} className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                                                        <p className="font-medium mb-3 text-gray-900">{ex.text}</p>
+                                                        <div className="space-y-2">
+                                                            {ex.options && ex.options.map((opt: string, idx: number) => (
+                                                                <button
+                                                                    key={idx}
+                                                                    className="block w-full text-right px-4 py-2 rounded border border-gray-200 hover:bg-gray-50 text-sm transition-colors focus:ring-2 focus:ring-blue-500"
+                                                                    onClick={(e) => {
+                                                                        const target = e.currentTarget;
+                                                                        // Robust comparison
+                                                                        const isCorrect = opt.trim() === ex.correctAnswer?.trim();
+
+                                                                        if (isCorrect) {
+                                                                            target.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+                                                                            target.innerText += ' ✅';
+                                                                        } else {
+                                                                            target.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
+                                                                            target.innerText += ' ❌';
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    {opt}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     {/* Review Section (Print & Screen) */}
                     <div className="space-y-6 print:space-y-4">
                         <div className="hidden print:block text-center border-b pb-4 mb-8">

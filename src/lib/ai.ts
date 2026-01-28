@@ -109,3 +109,81 @@ export async function generateQuestionsAI(subject: string, skill: string, count:
     console.error('All AI models failed');
     throw lastError || new Error('Failed to generate questions. Please try again later.');
 }
+
+export async function generateLearningPlan(score: number, maxScore: number, weaknesses: string[]) {
+    const percentage = (score / maxScore) * 100;
+    const isEnrichment = percentage >= 85;
+
+    // Mock response for testing/dev without key
+    if (mockMode) {
+        return {
+            type: isEnrichment ? 'enrichment' : 'remedial',
+            title: isEnrichment ? 'خطة إثرائية: تحديات العباقرة 🚀' : 'خطة علاجية: تعزيز المهارات 🛠️',
+            content: isEnrichment
+                ? 'أداء ممتاز! استمر في التميز. إليك تحديات لمستوى متقدم.'
+                : 'لا بأس، يمكننا تحسين الأداء بالتركيز على النقاط التالية.',
+            exercises: [
+                {
+                    text: isEnrichment ? 'سؤال تفكير ناقد متقدم؟' : 'سؤال مراجعة بسيط للمفهوم؟',
+                    options: ['خيـار 1', 'خيـار 2'],
+                    correctAnswer: 'خيـار 1'
+                }
+            ]
+        };
+    }
+
+    const prompt = `
+    Analyze the student performance: Score ${score}/${maxScore} (${Math.round(percentage)}%).
+    Weaknesses found: ${weaknesses.join(', ') || 'None detailed'}.
+    
+    Task: Create a personalized learning plan.
+    - If score >= 85%, create an "Enrichment Plan" (Advanced challenge, fun fact).
+    - If score < 85%, create a "Remedial Plan" (Explain weak concepts simply, build confidence).
+
+    Return ONLY raw JSON. No markdown.
+    JSON Format:
+    {
+        "type": "enrichment" OR "remedial",
+        "title": "Arabic Title",
+        "content": "Arabic text explaining the feedback",
+        "exercises": [
+            {
+                "text": "Arabic Question",
+                "options": ["Option1", "Option2", "Option3", "Option4"],
+                "correctAnswer": "Option1" 
+            }
+        ]
+    }
+    IMPORTANT: "correctAnswer" MUST be the EXACT string copy of one of the options. Do NOT use "A", "B", "1", or "2".
+    `;
+
+    for (const model of MODELS) {
+        try {
+            const completion = await openai!.chat.completions.create({
+                model: model,
+                messages: [{ role: 'user', content: prompt }],
+            });
+
+            if (!completion || !completion.choices || !completion.choices[0]) continue;
+
+            const content = completion.choices[0].message?.content || '{}';
+            const jsonStr = content.replace(/```json/g, '').replace(/```/g, '').trim();
+            const plan = JSON.parse(jsonStr);
+
+            if (plan.title && plan.content) {
+                return plan;
+            }
+        } catch (error: any) {
+            console.warn(`Model ${model} failed for plan:`, error.message);
+            if (error.status === 401) break;
+        }
+    }
+
+    // Fallback if all fail
+    return {
+        type: isEnrichment ? 'enrichment' : 'remedial',
+        title: isEnrichment ? 'خطة إثرائية' : 'خطة علاجية',
+        content: 'نأسف، لم نتمكن من توليد الخطة تلقائياً في الوقت الحالي.',
+        exercises: []
+    };
+}
